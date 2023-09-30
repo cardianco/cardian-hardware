@@ -1,0 +1,4 @@
+**/build/*
+**/*.svd
+**/*.user
+.vscode
