@@ -1,4 +1,6 @@
+build
 **/build/*
 **/*.svd
+**/*.hex
 **/*.user
 .vscode
