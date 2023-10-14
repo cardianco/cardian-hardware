@@ -9,7 +9,7 @@ namespace cardian::gps {
 class neo: public core::attachable {
 public:
     enum NmeaType {
-        UTC,
+        UTC = 0,
         LATITUDE,
         LONGITUDE = 3,
         QUALITY_CODE = 5,

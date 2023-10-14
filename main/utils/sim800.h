@@ -4,8 +4,9 @@
 #include <string>
 
 #include "attachable.h"
-#include "timer.h"
 #include "serial.h"
+
+#include "../mcu/timer.h"
 
 namespace cardian::modules {
 using core::_string;
@@ -39,8 +40,8 @@ public:
     void read() {
         response res{};
 
-        while(mSerial.avalible()) {
-            _string value = mSerial.getline();
+        while(mSerial.available()) {
+            _string value = mSerial.readLine();
             _string _v = value.tolower();
 
             if(_v == "ok") {
@@ -52,7 +53,7 @@ public:
             }
         }
 
-        mSerial.emit("readyRead", {res});
+        emit("readyRead", {res});
     }
 
     void call(_string pn) {
@@ -86,8 +87,7 @@ public:
         /// o: OK
         run("AT+CFUN=0").then([this](const core::_any_list &args) {
             _UNUSED(args)
-            core::timer::once(30'000, [this](const core::_any_list &args) {
-                _UNUSED(args)
+            mcu::timer::once(30'000, [this] {
                 /// o: OK
                 run("AT+CFUN=1");
             });
@@ -168,6 +168,6 @@ public:
     void writeConfig() { run("AT&W"); }
 
     std::vector<response> mResponses;
-    core::serial mSerial;
+    core::serial1 mSerial;
 };
 }

@@ -113,32 +113,32 @@ struct utils final {
         timxInit(num - 1, interrupt);
     }
 
-	/**
-	 * @brief initTIMx
-	 * @param idx
-	 * @param interrupt
-	 * @note The idea of giving index is to prevent resolving the input timer index.
-	 */
-	static void timxInit(uint32_t idx, bool interrupt = false) {
-		IRQn_Type timx_irqn[4] = {TIM1_UP_IRQn, TIM2_IRQn, TIM3_IRQn, TIM4_IRQn};
-		TIM_TypeDef* timx[4] = {TIM1, TIM2, TIM3, TIM4};
-		uint32_t timx_en[4] = {RCC_APB2ENR_TIM1EN, RCC_APB1ENR_TIM2EN, RCC_APB1ENR_TIM3EN, RCC_APB1ENR_TIM4EN};
+    /**
+     * @brief initTIMx
+     * @param idx
+     * @param interrupt
+     * @note The idea of giving index is to prevent resolving the input timer index.
+     */
+    static void timxInit(uint32_t idx, bool interrupt = false) {
+        IRQn_Type timx_irqn[4] = {TIM1_UP_IRQn, TIM2_IRQn, TIM3_IRQn, TIM4_IRQn};
+        TIM_TypeDef* timx[4] = {TIM1, TIM2, TIM3, TIM4};
+        uint32_t timx_en[4] = {RCC_APB2ENR_TIM1EN, RCC_APB1ENR_TIM2EN, RCC_APB1ENR_TIM3EN, RCC_APB1ENR_TIM4EN};
 
-		timx[idx]->CR1 &= ~(TIM_CR1_CEN); /// Disable TIMx
+        timx[idx]->CR1 &= ~(TIM_CR1_CEN); /// Disable TIMx
 
-		/// Enable TIMx clock
-		if(idx) RCC->APB1ENR |= timx_en[idx];
-		else RCC->APB2ENR |= timx_en[idx];
+        /// Enable TIMx clock
+        if(idx) RCC->APB1ENR |= timx_en[idx];
+        else RCC->APB2ENR |= timx_en[idx];
 
-		NVIC_SetPriority(timx_irqn[idx], idx);
-		NVIC_EnableIRQ(timx_irqn[idx]);
+        NVIC_SetPriority(timx_irqn[idx], idx);
+        NVIC_EnableIRQ(timx_irqn[idx]);
 
-		timx[idx]->PSC = SystemCoreClock/1000;
-		timx[idx]->EGR |= TIM_EGR_UG; /// Reset TIMx
-		timx[idx]->ARR = UINT32_MAX;
+        timx[idx]->PSC = SystemCoreClock/1000;
+        timx[idx]->EGR |= TIM_EGR_UG; /// Reset TIMx
+        timx[idx]->ARR = UINT32_MAX;
 
-		timx[idx]->DIER |= interrupt ? TIM_DIER_UIE : 0x0UL; /// Enable interupt
-		//        timx[index]->CR1 |= TIM_CR1_CEN;
-	}
+        timx[idx]->DIER |= interrupt ? TIM_DIER_UIE : 0x0UL; /// Enable interupt
+        // timx[index]->CR1 |= TIM_CR1_CEN;
+    }
 };
 }

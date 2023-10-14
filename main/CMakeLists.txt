@@ -25,6 +25,7 @@ file(GLOB cardian-startups
 add_executable(${PROJECT_NAME}
     main.cpp
     ${cardian-startups}
+    third-party/ringbuffer/ringbuffer.hpp
 )
 
 target_link_libraries(${PROJECT_NAME}
